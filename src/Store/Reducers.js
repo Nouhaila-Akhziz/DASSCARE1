@@ -19,6 +19,7 @@ export const Provider = (state = {}, action) => {
       return state;
   }
 };
+
 const DEFAULT_MEDICALSTORAGE_STATE = {
   loaded: false,
   contract: {},
@@ -27,6 +28,7 @@ const DEFAULT_MEDICALSTORAGE_STATE = {
   },
   events: [],
 };
+
 export const MedicalStorage = (
   state = DEFAULT_MEDICALSTORAGE_STATE,
   action
@@ -68,64 +70,7 @@ export const MedicalStorage = (
         transferInProgress: false,
       };
 
-    case "REVOKE_DOCTOR_INITIALIZED":
-      return {
-        ...state,
-        transaction: {
-          isSuccessful: false,
-          isPending: true,
-        },
-        transferInProgress: false,
-      };
-    case "REVOKE_DOCTOR_SUCCESS":
-      return {
-        ...state,
-        transaction: {
-          isSuccessful: true,
-          isPending: false,
-        },
-        transferInProgress: true,
-        events: [action.event, ...state.events],
-      };
-    case "REVOKE_DOCTOR_FAIL":
-      return {
-        ...state,
-        transaction: {
-          isSuccessful: false,
-          isPending: false,
-          isError: true,
-        },
-        transferInProgress: false,
-      };
-    case "PROVIDE_DIAGNOSIS_INITIALIZED":
-      return {
-        ...state,
-        transaction: {
-          isSuccessful: false,
-          isPending: true,
-        },
-        transferInProgress: false,
-      };
-    case "PROVIDE_DIAGNOSIS_SUCCESS":
-      return {
-        ...state,
-        transaction: {
-          isSuccessful: true,
-          isPending: false,
-        },
-        transferInProgress: true,
-        events: [action.event, ...state.events],
-      };
-    case "PROVIDE_DIAGNOSIS_FAIL":
-      return {
-        ...state,
-        transaction: {
-          isSuccessful: false,
-          isPending: false,
-          isError: true,
-        },
-        transferInProgress: false,
-      };
+    // other cases...
 
     default:
       return state;

@@ -1,21 +1,30 @@
 import React, { useState } from "react";
+
 import "./register.css";
 import { Link, useNavigate } from "react-router-dom";
-import { loadAccount, registerUser } from "../../Store/Interactions";
+import { loadAccount, registerDoctor, registerUser } from "../../Store/Interactions";
 import { useDispatch, useSelector } from "react-redux";
+
 const Register = () => {
   const provider = useSelector((state) => state.Provider.connection);
   const medicalStorage = useSelector((state) => state.MedicalStorage.contract);
   const dispatch = useDispatch();
   const [registerType, setRegisterType] = useState("patient");
   const navigate = useNavigate();
-  const [name, setName] = useState(0);
-  const [age, setAge] = useState(0);
-  const [problem, setProblem] = useState(0);
-  const [details, setDetails] = useState(0);
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [problem, setProblem] = useState("");
+  
+  const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [major, setMajor] = useState("");
+  const [details, setDetails] = useState("");
+
   const registerHandler = (e) => {
     setRegisterType(e.target.value);
   };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     loadAccount(provider, dispatch);
@@ -33,23 +42,30 @@ const Register = () => {
         state: {},
       });
     } else {
-      await registerUser(
+      await registerDoctor(
         name,
+        phone,
+        gender,
+        qualification,
+        major,
         details,
-        problem,
-        registerType,
-        provider,
+        provider, // Pass provider as the first argument
         medicalStorage,
         dispatch
       );
+    
       navigate("/Doctor", {
         state: {},
       });
     }
-    setName(0);
-    setAge(0);
-    setDetails(0);
-    setProblem(0);
+    setName("");
+    setAge("");
+    setDetails("");
+    setProblem("");
+    setPhone("");
+    setGender("");
+    setQualification("");
+    setMajor("");
   };
 
   return (
@@ -63,59 +79,97 @@ const Register = () => {
             onChange={registerHandler}
             value={registerType}
           >
-            <option value="0" disabled>
-              Select type of registration
-            </option>
-            <option value="doctor">Doctor</option>
             <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
           </select>
         </div>
         <div className="form-group">
           <label>Name:</label>
           <input
             type="text"
-            id="address"
-            placeholder="Aman Gupta"
+            placeholder="Your Name"
             onChange={(e) => setName(e.target.value)}
-            value={name === 0 ? "" : name}
+            value={name}
             required
           />
         </div>
         {registerType === "patient" ? (
-          <div className="form-group">
-            <label>Age:</label>
-            <input
-              type="number"
-              id="address"
-              placeholder="34"
-              onChange={(e) => setAge(e.target.value)}
-              value={age == 0 ? "" : age}
-              required
-            />
-            <label>Problem:</label>
-            <input
-              type="text"
-              id="address"
-              placeholder="Diabities"
-              onChange={(e) => setProblem(e.target.value)}
-              value={problem === 0 ? "" : problem}
-              required
-            />
+          <div>
+            <div className="form-group">
+              <label>Age:</label>
+              <input
+                type="number"
+                placeholder="Your Age"
+                onChange={(e) => setAge(e.target.value)}
+                value={age}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Problem:</label>
+              <input
+                type="text"
+                placeholder="Your Problem"
+                onChange={(e) => setProblem(e.target.value)}
+                value={problem}
+                required
+              />
+            </div>
           </div>
         ) : (
-          <div className="form-group">
-            <label>Details:</label>
-            <input
-              type="text"
-              id="address"
-              placeholder="Holding a mbbs digree"
-              onChange={(e) => setDetails(e.target.value)}
-              value={details === 0 ? "" : details}
-              required
-            />
+          <div>
+            <div className="form-group">
+              <label>Phone:</label>
+              <input
+                type="text"
+                placeholder="Your Phone"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Gender:</label>
+              <input
+                type="text"
+                placeholder="Your Gender"
+                onChange={(e) => setGender(e.target.value)}
+                value={gender}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Qualification:</label>
+              <input
+                type="text"
+                placeholder="Your Qualification"
+                onChange={(e) => setQualification(e.target.value)}
+                value={qualification}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Major:</label>
+              <input
+                type="text"
+                placeholder="Your Major"
+                onChange={(e) => setMajor(e.target.value)}
+                value={major}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Details:</label>
+              <input
+                type="text"
+                placeholder="Details about yourself"
+                onChange={(e) => setDetails(e.target.value)}
+                value={details}
+                required
+              />
+            </div>
           </div>
         )}
-
         <div className="form-group">
           <button type="submit">Register</button>
         </div>

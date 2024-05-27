@@ -31,25 +31,72 @@ export const registerUser = async (
   type,
   provider,
   medicalStorage,
-  dispatch
+  dispatch // Make sure dispatch is included in the function arguments
 ) => {
-  let transaction;
+  // Dispatch action to indicate registration request initiation
   dispatch({ type: "REGISTER_REQUEST" });
+  
   try {
-    const signer = await provider.getSigner();
+    // Get the signer from the provider
+    const signer = provider.getSigner();
+    
+    // Determine the function to call based on the type of user (patient or doctor)
+    let transaction;
     if (type === "patient") {
+      // Call the addPatient function on the medicalStorage contract
       transaction = await medicalStorage
         .connect(signer)
         .addPatient(name, details, problem);
-      await transaction.wait();
     } else {
+      // Call the registerDoctor function on the medicalStorage contract
       transaction = await medicalStorage
         .connect(signer)
         .registerDoctor(name, details);
-      await transaction.wait();
     }
+    
+    // Wait for the transaction to be mined
+    await transaction.wait();
+    
+    // Dispatch action to indicate successful registration
+    dispatch({ type: "REGISTER_SUCCESS" });
   } catch (error) {
+    // Dispatch action to indicate registration failure
+    console.error("Error registering user:", error);
     dispatch({ type: "REGISTER_FAIL" });
+  }
+};
+export const registerDoctor = async (
+  name,
+  phone,
+  gender,
+  qualification,
+  major,
+  details,
+  provider,
+  medicalStorage,
+  dispatch
+) => {
+  // Dispatch action to indicate registration request initiation
+  dispatch({ type: "REGISTER_DOCTOR_REQUEST" });
+  
+  try {
+    // Get the signer from the provider
+    const signer = provider.getSigner();
+    
+    // Call the registerDoctor function on the medicalStorage contract
+    const transaction = await medicalStorage
+      .connect(signer)
+      .registerDoctor(name, phone, gender, qualification, major, details);
+    
+    // Wait for the transaction to be mined
+    await transaction.wait();
+    
+    // Dispatch action to indicate successful registration
+    dispatch({ type: "REGISTER_DOCTOR_SUCCESS" });
+  } catch (error) {
+    // Dispatch action to indicate registration failure
+    console.error("Error registering doctor:", error);
+    dispatch({ type: "REGISTER_DOCTOR_FAIL" });
   }
 };
 
@@ -74,9 +121,23 @@ export const getDoctorList = async (medicalStorage, address) => {
 };
 
 export const getDoctorDetails = async (medicalStorage, doctor) => {
-  const doctorDetails = await medicalStorage.getDoctorDetails(doctor);
-  return doctorDetails;
+  try {
+    const doctorDetails = await medicalStorage.getDoctorDetails(doctor);
+    return {
+      name: doctorDetails[0],
+      phone: doctorDetails[1],
+      gender: doctorDetails[2],
+      qualification: doctorDetails[3],
+      major: doctorDetails[4],
+      details: doctorDetails[5],
+    };
+  } catch (error) {
+    console.error("Error fetching doctor details:", error);
+    throw new Error("Failed to fetch doctor details. Please try again later.");
+  }
 };
+
+
 export const getDoctorDiagnosis = async (provider, medicalStorage, doctor) => {
   const signer = await provider.getSigner();
   const diagnosis = await medicalStorage

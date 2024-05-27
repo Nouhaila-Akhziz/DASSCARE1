@@ -3,6 +3,7 @@ import "./personalInformation.css";
 import { getDoctorList, getPatientDetails } from "../../Store/Interactions";
 import { useSelector } from "react-redux";
 import ShowDiagnosis from "../ShowDiagnosis/ShowDiagnosis";
+
 const PersonalInformation = () => {
   const account = useSelector((state) => state.Provider.account);
   const medicalStorage = useSelector((state) => state.MedicalStorage.contract);
@@ -12,6 +13,7 @@ const PersonalInformation = () => {
   const [details, setDetails] = useState(null);
   const [doctorList, setDoctorList] = useState(null);
   const [showDiagnosis, setShowDiagnosis] = useState(false);
+
   useEffect(() => {
     const fetchDetails = async () => {
       const details = await getPatientDetails(medicalStorage, account);
@@ -19,22 +21,23 @@ const PersonalInformation = () => {
       setDoctorList(doctorList);
       setDetails(details);
     };
+    
     if (medicalStorage && account) {
       fetchDetails();
     }
   }, [medicalStorage, account, transferInProgress]);
+
   return (
     <div className="personalInformation">
       <h2>Personal Information</h2>
       <p>
-        <strong>Name:</strong> {details && details[0]}
+        <strong>Name:</strong> {details && details.name}
       </p>
       <p>
-        <strong>Age:</strong>
-        {details && Math.round(details[1] * 100000) / 100000}
+        <strong>Age:</strong> {details && details.age}
       </p>
       <p>
-        <strong>Problem:</strong> {details && details[2]}
+        <strong>Problem:</strong> {details && details.problem}
       </p>
       <button
         className="btn"
@@ -43,14 +46,14 @@ const PersonalInformation = () => {
       >
         {showDiagnosis ? "Hide Diagnosis" : "Show Diagnosis"}
       </button>
-      {showDiagnosis ? (
+      {showDiagnosis && (
         <div>
           {doctorList &&
-            doctorList.map((doctors, index) => (
-              <ShowDiagnosis doctor={doctors} key={index} />
+            doctorList.map((doctor, index) => (
+              <ShowDiagnosis doctor={doctor} key={index} />
             ))}
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
