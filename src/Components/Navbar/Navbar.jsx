@@ -4,14 +4,14 @@ const Navbar = ({ setLogin }) => {
   return (
     <div className="navbar">
       <div className="navbar-left">
-        <a href="#">Swastchain</a>
+        <a href="#">DASSCARE</a>
       </div>
       <div className="navbar-right">
         <a href="#" onClick={() => setLogin(true)}>
-          Login
+          Sign in
         </a>
         <a href="#" onClick={() => setLogin(false)}>
-          Register
+          Sign up
         </a>
       </div>
     </div>

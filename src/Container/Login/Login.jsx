@@ -45,7 +45,7 @@ const Login = () => {
   };
   return (
     <div className="container">
-      <h2>Login with web3 Swastchain</h2>
+      <h2>Login</h2>
       <form onSubmit={submitHandler}>
         <div className="form-group">
           <label>Login as :</label>

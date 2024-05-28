@@ -76,11 +76,14 @@ const Register = () => {
 
   return (
     <div className="container">
-      <h2>Register with web3 Swastchain</h2>
+      <h2>Sign up</h2>
       <form onSubmit={submitHandler}>
         <div className="form-group">
-          <label>Register as :</label>
+          <label>Sign up as :</label>
           <select name="registerAs" onChange={registerHandler} value={registerType}>
+          <option value="0" disabled>
+              Select type of registration
+            </option>
             <option value="patient">Patient</option>
             <option value="doctor">Doctor</option>
           </select>
@@ -120,6 +123,9 @@ const Register = () => {
             <div className="form-group">
               <label>Gender:</label>
               <select name="gender" onChange={(e) => setGender(e.target.value)} value={gender}>
+              <option value="0" disabled>
+                 Select your gender
+            </option>
                 <option value="Female">Female</option>
                 <option value="Male">Male</option>
               </select>
@@ -210,7 +216,7 @@ const Register = () => {
           </div>
         )}
         <div className="form-group">
-          <button type="submit">Register</button>
+          <button type="submit">Sign up</button>
         </div>
       </form>
     </div>
