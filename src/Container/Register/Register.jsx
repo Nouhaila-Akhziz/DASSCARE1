@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import "./register.css";
 import { Link, useNavigate } from "react-router-dom";
 import { loadAccount, registerDoctor, registerUser } from "../../Store/Interactions";
@@ -12,11 +11,14 @@ const Register = () => {
   const [registerType, setRegisterType] = useState("patient");
   const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
   const [age, setAge] = useState("");
-  const [problem, setProblem] = useState("");
-  
-  const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [bloodType, setBloodType] = useState("");
+  const [allergies, setAllergies] = useState("");
+  const [problem, setProblem] = useState("");
   const [qualification, setQualification] = useState("");
   const [major, setMajor] = useState("");
   const [details, setDetails] = useState("");
@@ -27,45 +29,49 @@ const Register = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    loadAccount(provider, dispatch);
+    await loadAccount(provider, dispatch);
     if (registerType === "patient") {
       await registerUser(
         name,
+        phoneNum,
         age,
+        gender,
+        height,
+        weight,
+        bloodType,
+        allergies,
         problem,
-        registerType,
         provider,
         medicalStorage,
         dispatch
       );
-      navigate("/Patient", {
-        state: {},
-      });
+      navigate("/Patient");
     } else {
       await registerDoctor(
         name,
-        phone,
+        phoneNum,
         gender,
         qualification,
         major,
         details,
-        provider, // Pass provider as the first argument
+        provider,
         medicalStorage,
         dispatch
       );
-    
-      navigate("/Doctor", {
-        state: {},
-      });
+      navigate("/Doctor");
     }
     setName("");
+    setPhoneNum("");
     setAge("");
-    setDetails("");
-    setProblem("");
-    setPhone("");
     setGender("");
+    setHeight("");
+    setWeight("");
+    setBloodType("");
+    setAllergies("");
+    setProblem("");
     setQualification("");
     setMajor("");
+    setDetails("");
   };
 
   return (
@@ -74,11 +80,7 @@ const Register = () => {
       <form onSubmit={submitHandler}>
         <div className="form-group">
           <label>Register as :</label>
-          <select
-            name="registerAs"
-            onChange={registerHandler}
-            value={registerType}
-          >
+          <select name="registerAs" onChange={registerHandler} value={registerType}>
             <option value="patient">Patient</option>
             <option value="doctor">Doctor</option>
           </select>
@@ -90,6 +92,16 @@ const Register = () => {
             placeholder="Your Name"
             onChange={(e) => setName(e.target.value)}
             value={name}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Phone Number:</label>
+          <input
+            type="number"
+            placeholder="Your Phone Number"
+            onChange={(e) => setPhoneNum(e.target.value)}
+            value={phoneNum}
             required
           />
         </div>
@@ -106,6 +118,53 @@ const Register = () => {
               />
             </div>
             <div className="form-group">
+              <label>Gender:</label>
+              <select name="gender" onChange={(e) => setGender(e.target.value)} value={gender}>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Height:</label>
+              <input
+                type="text"
+                placeholder="Your Height"
+                onChange={(e) => setHeight(e.target.value)}
+                value={height}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Weight:</label>
+              <input
+                type="text"
+                placeholder="Your Weight"
+                onChange={(e) => setWeight(e.target.value)}
+                value={weight}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Blood Type:</label>
+              <input
+                type="text"
+                placeholder="Your Blood Type"
+                onChange={(e) => setBloodType(e.target.value)}
+                value={bloodType}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Allergies:</label>
+              <input
+                type="text"
+                placeholder="Your Allergies"
+                onChange={(e) => setAllergies(e.target.value)}
+                value={allergies}
+                required
+              />
+            </div>
+            <div className="form-group">
               <label>Problem:</label>
               <input
                 type="text"
@@ -118,26 +177,6 @@ const Register = () => {
           </div>
         ) : (
           <div>
-            <div className="form-group">
-              <label>Phone:</label>
-              <input
-                type="text"
-                placeholder="Your Phone"
-                onChange={(e) => setPhone(e.target.value)}
-                value={phone}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Gender:</label>
-              <input
-                type="text"
-                placeholder="Your Gender"
-                onChange={(e) => setGender(e.target.value)}
-                value={gender}
-                required
-              />
-            </div>
             <div className="form-group">
               <label>Qualification:</label>
               <input

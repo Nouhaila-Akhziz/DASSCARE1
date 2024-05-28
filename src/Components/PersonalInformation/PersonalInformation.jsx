@@ -34,7 +34,26 @@ const PersonalInformation = () => {
         <strong>Name:</strong> {details && details.name}
       </p>
       <p>
+        <strong>Phone:</strong> {details && details.phone}
+      </p>
+      <p>
         <strong>Age:</strong> {details && details.age}
+      </p>
+      
+      <p>
+        <strong>Gender:</strong> {details && details.gender}
+      </p>
+      <p>
+        <strong>Height:</strong> {details && details.height}
+      </p>
+      <p>
+        <strong>Weight:</strong> {details && details.weight}
+      </p>
+      <p>
+        <strong>BloodType:</strong> {details && details.bloodType}
+      </p>
+      <p>
+        <strong>Allergies:</strong> {details && details.allergies}
       </p>
       <p>
         <strong>Problem:</strong> {details && details.problem}

@@ -1,9 +1,27 @@
 {
-    "1337":{ 
-        "MedicalStorage": {
-        "address": "0x2B65b318F3C05a5626790F0b559232DA1c7bB273"
+    "1337": {
+      "MedicalStorage": {
+        "address": "0xB01CAD40AD49d896b389Af9Fa1738881Ed545eCb"
+      },
+      "explorerURL": "https://127.0.0.1:8545"
     },
-    "explorerURL": "https://127.0.0.1:7545"
-
+  
+    "31337": {
+        "MedicalStorage": {
+            "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+        },
+        "explorerURL": "#"
+    },
+    "11155111": {
+        "MedicalStorage": {
+            "address": "0x814B7B9Bfc61D6F918b51d006bE47974E781B100"
+        },
+        "explorerURL": "https://sepolia.etherscan.io/"
+    },
+    "80001": {
+        "MedicalStorage": {
+            "address": "0x0A5DE99bf01ff2fFa705d7B7c4A9A8CA84e1417a"
+        },
+        "explorerURL": "https://mumbai.polygonscan.com/"
     }
-}
+}  

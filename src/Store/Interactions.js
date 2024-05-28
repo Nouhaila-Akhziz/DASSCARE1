@@ -1,15 +1,18 @@
 import { ethers } from "ethers";
 import MEDICALSTORAGE_ABI from "../Abis/MedicalStorage.json";
+
 export const loadProvider = (dispatch) => {
   const connection = new ethers.providers.Web3Provider(window.ethereum);
   dispatch({ type: "PROVIDER_LOADED", connection });
   return connection;
 };
+
 export const loadNetwork = async (provider, dispatch) => {
   const { chainId } = await provider.getNetwork();
   dispatch({ type: "NETWORK_LOADED", chainId });
   return chainId;
 };
+
 export const loadAccount = async (provider, dispatch) => {
   const accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
@@ -18,53 +21,54 @@ export const loadAccount = async (provider, dispatch) => {
   dispatch({ type: "ACCOUNT_LOADED", account });
   return account;
 };
+
 export const loadMedicalStorage = (provider, address, dispatch) => {
   let medicalStorage;
   medicalStorage = new ethers.Contract(address, MEDICALSTORAGE_ABI, provider);
   dispatch({ type: "MEDICALSTORAGE_LOADED", medicalStorage });
   return medicalStorage;
 };
+
 export const registerUser = async (
   name,
-  details,
-  problem,
-  type,
+  phoneNum,
+  Age,
+  gender,
+  Height,
+  Weight,
+  BloodType,
+  Allergies,
+  Problem,
   provider,
   medicalStorage,
-  dispatch // Make sure dispatch is included in the function arguments
+  dispatch,
+  type // Make sure to add 'type' parameter
 ) => {
-  // Dispatch action to indicate registration request initiation
   dispatch({ type: "REGISTER_REQUEST" });
   
   try {
-    // Get the signer from the provider
     const signer = provider.getSigner();
     
-    // Determine the function to call based on the type of user (patient or doctor)
     let transaction;
     if (type === "patient") {
-      // Call the addPatient function on the medicalStorage contract
       transaction = await medicalStorage
         .connect(signer)
-        .addPatient(name, details, problem);
+        .addPatient(name, phoneNum, Age, gender, Height, Weight, BloodType, Allergies, Problem);
     } else {
-      // Call the registerDoctor function on the medicalStorage contract
+      const details = ""; // Define 'details' if needed
       transaction = await medicalStorage
         .connect(signer)
         .registerDoctor(name, details);
     }
     
-    // Wait for the transaction to be mined
     await transaction.wait();
-    
-    // Dispatch action to indicate successful registration
     dispatch({ type: "REGISTER_SUCCESS" });
   } catch (error) {
-    // Dispatch action to indicate registration failure
     console.error("Error registering user:", error);
     dispatch({ type: "REGISTER_FAIL" });
   }
 };
+
 export const registerDoctor = async (
   name,
   phone,
@@ -76,25 +80,16 @@ export const registerDoctor = async (
   medicalStorage,
   dispatch
 ) => {
-  // Dispatch action to indicate registration request initiation
   dispatch({ type: "REGISTER_DOCTOR_REQUEST" });
   
   try {
-    // Get the signer from the provider
     const signer = provider.getSigner();
-    
-    // Call the registerDoctor function on the medicalStorage contract
     const transaction = await medicalStorage
       .connect(signer)
       .registerDoctor(name, phone, gender, qualification, major, details);
-    
-    // Wait for the transaction to be mined
     await transaction.wait();
-    
-    // Dispatch action to indicate successful registration
     dispatch({ type: "REGISTER_DOCTOR_SUCCESS" });
   } catch (error) {
-    // Dispatch action to indicate registration failure
     console.error("Error registering doctor:", error);
     dispatch({ type: "REGISTER_DOCTOR_FAIL" });
   }
@@ -105,11 +100,13 @@ export const checkPatientAlreadyExists = async (provider, medicalStorage) => {
   const exists = await medicalStorage.connect(signer).addressPatientExists();
   return exists;
 };
+
 export const checkDoctorAlreadyExists = async (provider, medicalStorage) => {
   const signer = await provider.getSigner();
   const exists = await medicalStorage.connect(signer).addressDoctorExists();
   return exists;
 };
+
 export const getPatientDetails = async (medicalStorage, address) => {
   let details = await medicalStorage.getPatientDetails(address);
   return details;
@@ -137,7 +134,6 @@ export const getDoctorDetails = async (medicalStorage, doctor) => {
   }
 };
 
-
 export const getDoctorDiagnosis = async (provider, medicalStorage, doctor) => {
   const signer = await provider.getSigner();
   const diagnosis = await medicalStorage
@@ -145,9 +141,9 @@ export const getDoctorDiagnosis = async (provider, medicalStorage, doctor) => {
     .getDoctorDiagnosis(doctor);
   return diagnosis;
 };
+
 export const getAllDoctorNameAddresses = async (medicalStorage) => {
   const details = await medicalStorage.getAllDoctorsNamesAddresses();
-
   return details;
 };
 
@@ -161,15 +157,17 @@ export const addDoctor = async (
   dispatch({ type: "ADD_DOCTOR_INITIALIZED" });
   try {
     const signer = await provider.getSigner();
-
     transaction = await medicalStorage
       .connect(signer)
       .addDoctor(doctorAddress, { gasLimit: 300000 });
     await transaction.wait();
+    dispatch({ type: "ADD_DOCTOR_SUCCESS" });
   } catch (error) {
+    console.error("Error adding doctor:", error);
     dispatch({ type: "ADD_DOCTOR_FAIL" });
   }
 };
+
 export const revokeDoctorAccess = async (
   provider,
   doctorAddress,
@@ -184,7 +182,9 @@ export const revokeDoctorAccess = async (
       .connect(signer)
       .revokeDoctorAccess(doctorAddress);
     await transaction.wait();
+    dispatch({ type: "REVOKE_DOCTOR_SUCCESS" });
   } catch (error) {
+    console.error("Error revoking doctor access:", error);
     dispatch({ type: "REVOKE_DOCTOR_FAIL" });
   }
 };
@@ -193,6 +193,7 @@ export const getPatientListForDoctor = async (address, medicalStorage) => {
   const patientList = await medicalStorage.getPatientListForDoctor(address);
   return patientList;
 };
+
 export const provideDiagnosis = async (
   patientAddress,
   provider,
@@ -209,20 +210,22 @@ export const provideDiagnosis = async (
       .connect(signer)
       .provideDiagnosis(patientAddress, diagnosis, medicineInformation);
     await transaction.wait();
+    dispatch({ type: "PROVIDE_DIAGNOSIS_SUCCESS" });
   } catch (error) {
+    console.error("Error providing diagnosis:", error);
     dispatch({ type: "PROVIDE_DIAGNOSIS_FAIL" });
   }
 };
 
 export const getPreviousDiagnosis = async (
-  patinetAddress,
+  patientAddress,
   provider,
   medicalStorage
 ) => {
   const signer = await provider.getSigner();
   let patientDiagnosis = await medicalStorage
     .connect(signer)
-    .getPreviousDiagnosis(patinetAddress);
+    .getPreviousDiagnosis(patientAddress);
   return patientDiagnosis;
 };
 

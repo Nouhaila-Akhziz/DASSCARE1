@@ -6,8 +6,8 @@ module.exports = {
   solidity: "0.8.19",
  networks:{
   ganache:{
-   url : ' http://127.0.0.1:7545',
-   accounts : ['0x23bfb59be7e975ad6ae30bcc445f40da00bf3bb3ceceb7b673a95fce71cd7719', '0x3c5ba6ef7bbedd40cdca19305845003552028f4b205bf24bbb7b37321d45c536']
+   url : ' http://127.0.0.1:8545',
+   accounts : ['0xfe5e4c544166fa0cadb379019ee4eab1a2d1afa4b5bfdd652c3e8a1954a3a38f','0xa86b293fdbe3709464360082813e22374a4dc795998c333cd6851a4591262f67']
 }
 }
 };
